@@ -15,7 +15,10 @@ export const addUser = async (userData) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(userData)
     });
-    return response;
+    if (!response.ok) {
+        throw new Error('Failed to add user');
+    }
+    return response.json();
 };
 
 export const fetchPosts = async () => {
@@ -32,7 +35,10 @@ export const addPost = async (postData) => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(postData)
     });
-    return response;
+    if (!response.ok) {
+        throw new Error('Failed to add post');
+    }
+    return response.json();
 };
 
 export const refreshPosts = async () => {

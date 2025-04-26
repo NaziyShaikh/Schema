@@ -1,6 +1,6 @@
 // src/PostForm.js
 import React, { useState, useEffect } from 'react';
-import { fetchUsers, addPost, refreshPosts } from './api';
+import { fetchUsers, addPost } from './api';
 
 const PostForm = () => {
     const [title, setTitle] = useState('');
@@ -13,8 +13,8 @@ const PostForm = () => {
     useEffect(() => {
         const loadUsers = async () => {
             try {
-                const response = await fetchUsers();
-                setUsers(response);
+                const users = await fetchUsers();
+                setUsers(users);
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching users:', error);
@@ -32,21 +32,15 @@ const PostForm = () => {
         }
 
         try {
-            const response = await addPost({ title, content, userId });
+            await addPost({ title, content, userId });
+            setMessage('Post added successfully!');
+            setTitle('');
+            setContent('');
+            setUserId('');
             
-            if (response.ok) {
-                setMessage('Post added successfully!');
-                setTitle('');
-                setContent('');
-                setUserId('');
-                
-                
-                await refreshPosts();
-               
-            } else {
-                const errorData = await response.json();
-                setMessage(`Failed to add post: ${errorData.error}`);
-            }
+            // Refresh users list after successful post addition
+            const updatedUsers = await fetchUsers();
+            setUsers(updatedUsers);
         } catch (error) {
             setMessage('An error occurred. Please try again.');
         }
