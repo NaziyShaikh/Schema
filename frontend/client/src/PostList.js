@@ -11,18 +11,20 @@ const PostsList = () => {
         const loadPosts = async () => {
             try {
                 const response = await fetchPosts();
-                setPosts(response);
-                setLoading(false);
+                if (response.ok) {
+                    const data = await response.json();
+                    setPosts(data);
+                    setLoading(false);
+                } else {
+                    throw new Error('Failed to fetch posts');
+                }
             } catch (err) {
                 setError('Failed to load posts. Please try again.');
                 setLoading(false);
             }
         };
 
-      
         loadPosts();
-
-       
         const interval = setInterval(() => {
             loadPosts();
         }, 5000);
@@ -50,8 +52,8 @@ const PostsList = () => {
                             <h3>{post.title}</h3>
                             <p className="post-content">{post.content}</p>
                             <div className="post-meta">
-                                <span>By: {post.user.name}</span>
-                                <span className="post-email">({post.user.email})</span>
+                                <span>By: {post.user ? post.user.name : 'Unknown User'}</span>
+                                <span className="post-email">({post.user ? post.user.email : 'N/A'})</span>
                             </div>
                         </div>
                     ))}
