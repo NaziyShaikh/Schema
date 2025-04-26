@@ -10,15 +10,11 @@ const PostsList = () => {
     useEffect(() => {
         const loadPosts = async () => {
             try {
-                const response = await fetchPosts();
-                if (response.ok) {
-                    const data = await response.json();
-                    setPosts(data);
-                    setLoading(false);
-                } else {
-                    throw new Error('Failed to fetch posts');
-                }
+                const data = await fetchPosts();
+                setPosts(data);
+                setLoading(false);
             } catch (err) {
+                console.error('Error fetching posts:', err);
                 setError('Failed to load posts. Please try again.');
                 setLoading(false);
             }
